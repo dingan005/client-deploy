@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-key */
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
@@ -12,7 +11,15 @@ function Users() {
     // Fetch all users
     useEffect(() => {
         axios.get(`${API_BASE_URL}/`)
-            .then(result => setUsers(result.data))
+            .then(result => {
+                console.log("API Response:", result.data);  // Debugging API response
+                if (Array.isArray(result.data)) {
+                    setUsers(result.data);
+                } else {
+                    console.error("API response is not an array:", result.data);
+                    setUsers([]);  // Set empty array to prevent `.map()` error
+                }
+            })
             .catch(err => console.log("Error fetching users:", err));
     }, []);
 
@@ -39,17 +46,23 @@ function Users() {
                         </tr>
                     </thead>
                     <tbody>
-                        {users.map((user) => (
-                            <tr key={user._id}>  {/* Added key prop */}
-                                <td>{user.name}</td>
-                                <td>{user.email}</td>
-                                <td>{user.age}</td>
-                                <td>
-                                    <Link to={`/update/${user._id}`} className="btn btn-success me-2">Update</Link>
-                                    <button className="btn btn-danger" onClick={() => handleDelete(user._id)}>Delete</button>
-                                </td>
+                        {users.length > 0 ? (
+                            users.map((user) => (
+                                <tr key={user._id}>  
+                                    <td>{user.name}</td>
+                                    <td>{user.email}</td>
+                                    <td>{user.age}</td>
+                                    <td>
+                                        <Link to={`/update/${user._id}`} className="btn btn-success me-2">Update</Link>
+                                        <button className="btn btn-danger" onClick={() => handleDelete(user._id)}>Delete</button>
+                                    </td>
+                                </tr>
+                            ))
+                        ) : (
+                            <tr>
+                                <td colSpan="4" className="text-center">No users found</td>
                             </tr>
-                        ))}
+                        )}
                     </tbody>
                 </table>
             </div>
