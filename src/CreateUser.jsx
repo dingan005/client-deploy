@@ -3,7 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 // Get backend URL from .env
-const API_BASE_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:3001";
+const API_BASE_URL = "https://server-render-n1ma.onrender.com";
 
 function CreateUser() {
     const [name, setName] = useState("");
